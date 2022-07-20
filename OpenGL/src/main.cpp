@@ -112,7 +112,7 @@ int main(void)
         shader.Bind();
         shader.SetUniform4f("u_Color", 0.2f, 0.3f, 0.5f, 1.0f);
 
-        Texture texture("res/textures/explosion.png");
+        Texture texture("res/textures/foam.png");
         texture.Bind();
         shader.SetUniform1i("u_Texture", 0); // 0 matches slot 0
 
