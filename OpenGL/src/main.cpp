@@ -1,7 +1,15 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include "imgui/imgui.h"
 
+// Projection is the math behind renderering a 3d world to a 2d monitor. 3d points to 2d.
+// Orthographic: usually 2d projection
+// Perspective : usually 3d projection
 
+// View and model matrix. All of these get multiplied by vertex to put position on screen
+// MVP: model view projection matrix. transformation pipeline of vertex
+// View matrix: camera position and orientation
+// model: translation, rotation, and scale
 
 #include "Renderer.h"
 
@@ -14,11 +22,13 @@
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
 
 
-
-constexpr int width{ 1280 };
-constexpr int height{ 720 };
+int width{ 960 };
+int height{ 540  };
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
@@ -59,12 +69,19 @@ int main(void)
     fprintf(stdout, "Status: Using GLEW %s", glewGetString(GLEW_VERSION));
     fprintf(stdout, " | Status: Using openGL %s\n", glGetString(GL_VERSION));
 
+    ImGui::CreateContext();
+
+    ImGui::StyleColorsDark();
+
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("#version 130");
+
     {
         float positions[] = {
-            -0.5f, -0.5f, 0.0f, 0.0f,   // 0 bottom left
-             0.5f, -0.5f, 1.0f, 0.0f,   // 1 right side of texture
-             0.5f,  0.5f, 1.0f, 1.0f,   // 2 top right
-            -0.5f,  0.5f, 0.0f, 1.0f    // 3 top left
+            100.0f, 100.0f, 0.0f, 0.0f,   // 0 bottom left
+        	200.0f, 100.0f, 1.0f, 0.0f,   // 1 right side of texture
+        	200.0f, 200.0f, 1.0f, 1.0f,   // 2 top right
+            100.0f, 200.0f, 0.0f, 1.0f    // 3 top left
         };
 
         // index buffer create two triangles and share vertices instead of being redundant.
@@ -75,7 +92,6 @@ int main(void)
 
         GLCALL(glEnable(GL_BLEND));
         GLCALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-
 
         glViewport(0, 0, width, height);
 
@@ -89,16 +105,17 @@ int main(void)
 
         IndexBuffer ib(indices, 6);
 
-        glm::mat4 proj = glm::ortho(-2.0f, 2.0f, -1.125f, 1.125f, -1.0f, 1.0f); // 16:9 aspect ratio
+        glm::mat4 proj = glm::ortho(0.0f, static_cast<float>(width), 0.0f, static_cast<float>(height), -1.0f, 1.0f);
+        glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-100, 0, 0));
 
         Shader shader("res/shaders/Basic.shader");
         shader.Bind();
         shader.SetUniform4f("u_Color", 0.2f, 0.3f, 0.5f, 1.0f);
-        shader.SetUniformMat4f("u_MVP", proj);
 
         Texture texture("res/textures/explosion.png");
         texture.Bind();
         shader.SetUniform1i("u_Texture", 0); // 0 matches slot 0
+
 
         va.Unbind(); 
         vb.Unbind();
@@ -107,28 +124,40 @@ int main(void)
 
         Renderer renderer;
 
-        float c = 0.0f;
-        float inc = 0.01f;
+        glm::vec3 translation{ 200, 200, 0 };
+
+        bool show_demo_window = true;
+        bool show_another_window = false;
+        ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
         /* Loop until the user closes the window */
         while (!glfwWindowShouldClose(window))
         {
             // Render loop
             renderer.Clear();
-            GLCALL(glClearColor(c, 0.0f, 0.0f, 1.0f));
+            GLCALL(glClearColor(0.9f, 0.9f, 0.9f, 1.0f));
+
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
+
+
+            glm::mat4 model = glm::translate(glm::mat4(1.0f),translation);
+            glm::mat4 mvp = proj * view * model; // reverse order multiplication
+
 
             shader.Bind();
-            //shader.SetUniform4f("u_Color", c, 0.3f, 0.8f ,1.0f);
+            shader.SetUniform4f("u_Color", 0.3f, 0.3f, 0.8f ,1.0f);
+            shader.SetUniformMat4f("u_MVP", mvp);
 
             renderer.Draw(va, ib, shader);
 
-            if (c > 1.0f) {
-                inc = -0.01f;
-            }
-            else if (c < 0.0f) {
-                inc = 0.01f;
+            {
+                ImGui::SliderFloat3("Translation", &translation.x, 0.0f, 960.0f);
+                ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
             }
 
-            c += inc;
+            ImGui::Render();
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
             /* Swap front and back buffers */
             glfwSwapBuffers(window);
@@ -137,7 +166,11 @@ int main(void)
         }
 
     }
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 
+    glfwDestroyWindow(window);
     glfwTerminate();
     return 0;
 }
