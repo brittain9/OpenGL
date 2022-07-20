@@ -78,10 +78,10 @@ int main(void)
 
     {
         float positions[] = {
-            100.0f, 100.0f, 0.0f, 0.0f,   // 0 bottom left
-        	200.0f, 100.0f, 1.0f, 0.0f,   // 1 right side of texture
-        	200.0f, 200.0f, 1.0f, 1.0f,   // 2 top right
-            100.0f, 200.0f, 0.0f, 1.0f    // 3 top left
+            -50.0f,-50.0f, 0.0f, 0.0f,   // 0 bottom left , 3 and 4 are texture coords
+        	 50.0f,-50.0f, 1.0f, 0.0f,   // 1 right side of texture
+        	 50.0f, 50.0f, 1.0f, 1.0f,   // 2 top right
+            -50.0f, 50.0f, 0.0f, 1.0f    // 3 top left
         };
 
         // index buffer create two triangles and share vertices instead of being redundant.
@@ -106,16 +106,17 @@ int main(void)
         IndexBuffer ib(indices, 6);
 
         glm::mat4 proj = glm::ortho(0.0f, static_cast<float>(width), 0.0f, static_cast<float>(height), -1.0f, 1.0f);
-        glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-100, 0, 0));
+        glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
 
         Shader shader("res/shaders/Basic.shader");
         shader.Bind();
-        shader.SetUniform4f("u_Color", 0.2f, 0.3f, 0.5f, 1.0f);
+        //shader.SetUniform4f("u_Color", 0.2f, 0.3f, 0.5f, 1.0f);
 
-        Texture texture("res/textures/foam.png");
+
+
+        Texture texture("res/textures/goat.png");
         texture.Bind();
         shader.SetUniform1i("u_Texture", 0); // 0 matches slot 0
-
 
         va.Unbind(); 
         vb.Unbind();
@@ -124,7 +125,9 @@ int main(void)
 
         Renderer renderer;
 
-        glm::vec3 translation{ 200, 200, 0 };
+        glm::vec3 translationA{ 200, 200, 0 };
+        glm::vec3 translationB{ 400, 200, 0 };
+
 
         bool show_demo_window = true;
         bool show_another_window = false;
@@ -141,18 +144,29 @@ int main(void)
             ImGui::NewFrame();
 
 
-            glm::mat4 model = glm::translate(glm::mat4(1.0f),translation);
-            glm::mat4 mvp = proj * view * model; // reverse order multiplication
+            {
+	            glm::mat4 model = glm::translate(glm::mat4(1.0f), translationA);
+	            glm::mat4 mvp = proj * view * model; // reverse order multiplication
 
+	            shader.Bind();
+	            shader.SetUniformMat4f("u_MVP", mvp);
+	            renderer.Draw(va, ib, shader);
 
-            shader.Bind();
-            shader.SetUniform4f("u_Color", 0.3f, 0.3f, 0.8f ,1.0f);
-            shader.SetUniformMat4f("u_MVP", mvp);
-
-            renderer.Draw(va, ib, shader);
+			}
 
             {
-                ImGui::SliderFloat3("Translation", &translation.x, 0.0f, 960.0f);
+                glm::mat4 model = glm::translate(glm::mat4(1.0f), translationB);
+                glm::mat4 mvp = proj * view * model;
+
+                shader.Bind();
+            	shader.SetUniformMat4f("u_MVP", mvp);
+                renderer.Draw(va, ib, shader);
+            }
+
+
+            {
+                ImGui::SliderFloat3("Translation A", &translationA.x, 0.0f, 960.0f);
+                ImGui::SliderFloat3("Translation B", &translationB.x, 0.0f, 960.0f);
                 ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
             }
 
