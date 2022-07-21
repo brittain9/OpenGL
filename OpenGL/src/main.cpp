@@ -26,165 +26,94 @@
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 
+#include "tests/TestClearColor.h"
+
 
 int width{ 960 };
 int height{ 540  };
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
-    // From learnopengl Hello Window. this with glfwSetFrame will auto resize the viewport on window resize
-    glViewport(0, 0, width, height);
+	// From learnopengl Hello Window. this with glfwSetFrame will auto resize the viewport on window resize
+	glViewport(0, 0, width, height);
 }
 
 int main(void)
 {
-    GLFWwindow* window;
+	GLFWwindow* window;
 
-    if (!glfwInit())
-        return -1;
+	if (!glfwInit())
+		return -1;
 
-    // Specify version 3.3 for tutorial and compatibility
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	// Specify version 3.3 for tutorial and compatibility
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(width, height, "Alex's Window", NULL, NULL);
-    if (!window)
-    {
-        glfwTerminate();
-        return -1;
-    }
+	/* Create a windowed mode window and its OpenGL context */
+	window = glfwCreateWindow(width, height, "Alex's Window", NULL, NULL);
+	if (!window)
+	{
+		glfwTerminate();
+		return -1;
+	}
 
-    /* Make the window's context current */
-    glfwMakeContextCurrent(window);
+	/* Make the window's context current */
+	glfwMakeContextCurrent(window);
 
-    glfwSwapInterval(1);
+	glfwSwapInterval(1);
 
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-    GLenum err = glewInit(); // Have to use glewInit() after openGL context created.
-    if (GLEW_OK != err)
-        fprintf(stderr, "Error: %s", glewGetErrorString(err));
-    fprintf(stdout, "Status: Using GLEW %s", glewGetString(GLEW_VERSION));
-    fprintf(stdout, " | Status: Using openGL %s\n", glGetString(GL_VERSION));
+	GLenum err = glewInit(); // Have to use glewInit() after openGL context created.
+	if (GLEW_OK != err)
+		fprintf(stderr, "Error: %s", glewGetErrorString(err));
+	fprintf(stdout, "Status: Using GLEW %s", glewGetString(GLEW_VERSION));
+	fprintf(stdout, " | Status: Using openGL %s\n", glGetString(GL_VERSION));
 
-    ImGui::CreateContext();
+	ImGui::CreateContext();
 
-    ImGui::StyleColorsDark();
+	ImGui::StyleColorsDark();
 
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init("#version 130");
+	ImGui_ImplGlfw_InitForOpenGL(window, true);
+	ImGui_ImplOpenGL3_Init("#version 130");
 
-    {
-        float positions[] = {
-            -50.0f,-50.0f, 0.0f, 0.0f,   // 0 bottom left , 3 and 4 are texture coords
-        	 50.0f,-50.0f, 1.0f, 0.0f,   // 1 right side of texture
-        	 50.0f, 50.0f, 1.0f, 1.0f,   // 2 top right
-            -50.0f, 50.0f, 0.0f, 1.0f    // 3 top left
-        };
+	{
+		GLCALL(glEnable(GL_BLEND));
+		GLCALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
-        // index buffer create two triangles and share vertices instead of being redundant.
-        unsigned int indices[] = {
-            0, 1, 2, // triangle 1
-            2, 3, 0  // triangle 2
-        };
+		glViewport(0, 0, width, height);
 
-        GLCALL(glEnable(GL_BLEND));
-        GLCALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+		Renderer renderer;
 
-        glViewport(0, 0, width, height);
+		test::TestClearColor test;
 
-        VertexArray va;
-        VertexBuffer vb(positions, 4 * 4 * sizeof(float));
+		while (!glfwWindowShouldClose(window))
+		{
+			renderer.Clear();
 
-        VertexBufferLayout layout;
-        layout.Push<float>(2);
-        layout.Push<float>(2);
-        va.AddBuffer(vb, layout);
+			test.OnUpdate(0.0f);
+			test.OnRender();
 
-        IndexBuffer ib(indices, 6);
+			ImGui_ImplOpenGL3_NewFrame();
+			ImGui_ImplGlfw_NewFrame();
+			ImGui::NewFrame();
+			test.OnImGuiRender();
 
-        glm::mat4 proj = glm::ortho(0.0f, static_cast<float>(width), 0.0f, static_cast<float>(height), -1.0f, 1.0f);
-        glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
+			ImGui::Render();
+			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-        Shader shader("res/shaders/Basic.shader");
-        shader.Bind();
-        //shader.SetUniform4f("u_Color", 0.2f, 0.3f, 0.5f, 1.0f);
+			glfwSwapBuffers(window);
 
+			glfwPollEvents();
+		}
 
+	}
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
 
-        Texture texture("res/textures/goat.png");
-        texture.Bind();
-        shader.SetUniform1i("u_Texture", 0); // 0 matches slot 0
-
-        va.Unbind(); 
-        vb.Unbind();
-        ib.Unbind();
-        shader.Unbind();
-
-        Renderer renderer;
-
-        glm::vec3 translationA{ 200, 200, 0 };
-        glm::vec3 translationB{ 400, 200, 0 };
-
-
-        bool show_demo_window = true;
-        bool show_another_window = false;
-        ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-        /* Loop until the user closes the window */
-        while (!glfwWindowShouldClose(window))
-        {
-            // Render loop
-            renderer.Clear();
-            GLCALL(glClearColor(0.9f, 0.9f, 0.9f, 1.0f));
-
-            ImGui_ImplOpenGL3_NewFrame();
-            ImGui_ImplGlfw_NewFrame();
-            ImGui::NewFrame();
-
-
-            {
-	            glm::mat4 model = glm::translate(glm::mat4(1.0f), translationA);
-	            glm::mat4 mvp = proj * view * model; // reverse order multiplication
-
-	            shader.Bind();
-	            shader.SetUniformMat4f("u_MVP", mvp);
-	            renderer.Draw(va, ib, shader);
-
-			}
-
-            {
-                glm::mat4 model = glm::translate(glm::mat4(1.0f), translationB);
-                glm::mat4 mvp = proj * view * model;
-
-                shader.Bind();
-            	shader.SetUniformMat4f("u_MVP", mvp);
-                renderer.Draw(va, ib, shader);
-            }
-
-
-            {
-                ImGui::SliderFloat3("Translation A", &translationA.x, 0.0f, 960.0f);
-                ImGui::SliderFloat3("Translation B", &translationB.x, 0.0f, 960.0f);
-                ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-            }
-
-            ImGui::Render();
-            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-            /* Swap front and back buffers */
-            glfwSwapBuffers(window);
-
-            glfwPollEvents(); // check if input events triggered
-        }
-
-    }
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
-
-    glfwDestroyWindow(window);
-    glfwTerminate();
-    return 0;
+	glfwDestroyWindow(window);
+	glfwTerminate();
+	return 0;
 }
