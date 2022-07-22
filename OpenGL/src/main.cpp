@@ -27,10 +27,12 @@
 #include "imgui/imgui_impl_opengl3.h"
 
 #include "tests/TestClearColor.h"
+#include "tests/TestTexture.h"
+
 
 
 int width{ 960 };
-int height{ 540  };
+int height{ 540 };
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
@@ -91,7 +93,7 @@ int main(void)
 		currentTest = testMenu;
 
 		testMenu->RegisterTest<test::TestClearColor>("Clear Color");
-
+		testMenu->RegisterTest<test::TestTexture2D>("2D Texture");
 
 		while (!glfwWindowShouldClose(window))
 		{
@@ -115,8 +117,7 @@ int main(void)
 				currentTest->OnImGuiRender();
 				ImGui::End();
 			}
-
-
+			
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
