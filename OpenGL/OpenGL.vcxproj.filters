@@ -15,7 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\shaders\Basic.shader" />
     <None Include="src\vendor\glm\detail\func_common.inl">
       <Filter>Header Files</Filter>
     </None>
@@ -424,6 +423,9 @@
     <None Include="src\vendor\glm\gtx\wrap.inl">
       <Filter>Header Files</Filter>
     </None>
+    <None Include="res\shaders\BasicVertex.shader" />
+    <None Include="res\shaders\FragmentColor.shader" />
+    <None Include="res\shaders\FragmentTexture.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\goat.png">
@@ -498,6 +500,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\tests\TestTexture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tests\TestFragmentColor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1406,6 +1411,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\tests\TestTexture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tests\TestFragmentColor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

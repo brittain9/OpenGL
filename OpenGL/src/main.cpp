@@ -2,15 +2,6 @@
 #include <GLFW/glfw3.h>
 #include "imgui/imgui.h"
 
-// Projection is the math behind renderering a 3d world to a 2d monitor. 3d points to 2d.
-// Orthographic: usually 2d projection
-// Perspective : usually 3d projection
-
-// View and model matrix. All of these get multiplied by vertex to put position on screen
-// MVP: model view projection matrix. transformation pipeline of vertex
-// View matrix: camera position and orientation
-// model: translation, rotation, and scale
-
 #include "Renderer.h"
 
 #include "VertexBuffer.h"
@@ -28,8 +19,9 @@
 
 #include "tests/TestClearColor.h"
 #include "tests/TestTexture.h"
+#include "tests/TestFragmentColor.h"
 
-
+// Batch Rendering: how we can render more than 1 piece of geometry in a single draw call
 
 int width{ 960 };
 int height{ 540 };
@@ -94,6 +86,8 @@ int main(void)
 
 		testMenu->RegisterTest<test::TestClearColor>("Clear Color");
 		testMenu->RegisterTest<test::TestTexture2D>("2D Texture");
+		testMenu->RegisterTest<test::TestFragmentColor>("2D Color");
+
 
 		while (!glfwWindowShouldClose(window))
 		{
