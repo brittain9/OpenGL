@@ -26,5 +26,6 @@ void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& 
     shader.Bind(); // shaders/programs. Tells the GPU what to do. Nothing to do with lighting
     va.Bind(); // Array that contains all the actual data that we do stuff with. Vertex buffer and index buffer
     ib.Bind(); // contains indices
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     GLCALL(glDrawElements(GL_TRIANGLES, ib.GetCount(), GL_UNSIGNED_INT, nullptr));
 }

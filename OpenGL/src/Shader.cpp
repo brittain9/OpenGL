@@ -59,9 +59,9 @@ unsigned int Shader::CompileShaders(unsigned int type, const std::string& source
 		GLCALL(glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length));
 		char* message = (char*)alloca(length * sizeof(char)); // allocate on the stack dynamically.
 		GLCALL(glGetShaderInfoLog(id, length, &length, message));
-		std::cout << "Failed to compile" <<
+		std::cout << "Failed to compile " <<
 			(type == GL_VERTEX_SHADER ? "vertex" : "fragment")
-			<< "shader!" << std::endl;
+			<< " shader!" << std::endl;
 		std::cout << message << std::endl;
 
 		GLCALL(glDeleteShader(id));
@@ -73,6 +73,7 @@ unsigned int Shader::CompileShaders(unsigned int type, const std::string& source
 
 unsigned int Shader::CreateShader(const std::string& VertexShader, const std::string& FragmentShader)
 {
+	// Creates shader program object. Can activate program to render objects
 	GLCALL(unsigned int program = glCreateProgram());
 	unsigned int vs = CompileShaders(GL_VERTEX_SHADER, VertexShader);
 	unsigned int fs = CompileShaders(GL_FRAGMENT_SHADER, FragmentShader);

@@ -11,7 +11,7 @@
 namespace test
 {
 	TestTexture2D::TestTexture2D()
-		: m_Proj(glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f)),
+		: m_Proj(glm::ortho(0.0f, static_cast<float>(width), 0.0f, static_cast<float>(height), -1.0f, 1.0f)),
 		m_View(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0))),
 		m_TranslationA(200, 200, 0), m_TranslationB(400, 200, 0)
 
@@ -20,13 +20,12 @@ namespace test
 		glm::vec3 translationB(400, 200, 0);
 	  
 		float positions[] = {
-			-50.0f, -50.0f, 0.0f, 0.0f,   // 0 bottom left
-			 50.0f, -50.0f, 1.0f, 0.0f,   // 1 right side of texture
-			 50.0f,  50.f,  1.0f, 1.0f,   // 2 top right
-			-50.0f,  50.0f, 0.0f, 1.0f    // 3 top left
+			-50.0f, -50.0f, 0.0f, 0.0f, 0.0f,   // x, y, z, text coords
+			 50.0f, -50.0f, 0.0f, 1.0f, 0.0f,   // 1 right side of texture
+			 50.0f,  50.0f, 0.0f, 1.0f, 1.0f,   // 2 top right
+			-50.0f,  50.0f, 0.0f, 0.0f, 1.0f    // 3 top left
 		};
 
-		// index buffer create two triangles and share vertices instead of being redundant.
 		unsigned int indices[] = {
 			0, 1, 2, // triangle 1
 			2, 3, 0  // triangle 2
@@ -37,18 +36,18 @@ namespace test
 
 		m_VAO = std::make_unique<VertexArray>();
 
-		m_VBO = std::make_unique<VertexBuffer>(positions, 4 * 4 * sizeof(float));
+		m_VBO = std::make_unique<VertexBuffer>(positions, 5 * 4 * sizeof(float));
 		VertexBufferLayout layout;
-		layout.Push<float>(2);
+		layout.Push<float>(3);
 		layout.Push<float>(2);
 
 		m_VAO->AddBuffer(*m_VBO, layout);
 		m_IBO = std::make_unique<IndexBuffer>(indices, 6);
 
 
-		m_Shader = std::make_unique<Shader>("res/shaders/BasicVertex.shader", "res/shaders/FragmentTexture.shader");
+		m_Shader = std::make_unique<Shader>("res/shaders/VertexTexture.shader", "res/shaders/FragmentTexture.shader");
 		m_Shader->Bind();
-		m_Texture = std::make_unique<Texture>("res/textures/explosion.png");
+		m_Texture = std::make_unique<Texture>("res/textures/gorilla.png");
 		m_Shader->SetUniform1i("u_Texture", 0); // 0 matches slot 0
 
 	}
@@ -89,8 +88,8 @@ namespace test
 
 	void TestTexture2D::OnImGuiRender()
 	{
-		ImGui::SliderFloat3("Translation A", &m_TranslationA.x, 0.0f, 960.0f);
-		ImGui::SliderFloat3("Translation B", &m_TranslationB.x, 0.0f, 960.0f);
+		ImGui::SliderFloat2("Translation A", &m_TranslationA.x, 0.0f, static_cast<float>(width));
+		ImGui::SliderFloat2("Translation B", &m_TranslationB.x, 0.0f, static_cast<float>(width));
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 	}
 }

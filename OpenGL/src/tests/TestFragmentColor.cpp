@@ -2,7 +2,6 @@
 
 #include "Renderer.h"
 
-
 #include "glm/ext/matrix_clip_space.hpp"
 #include "glm/ext/matrix_transform.hpp"
 #include "imgui/imgui.h"
@@ -12,17 +11,20 @@ namespace test
 {
 	TestFragmentColor::TestFragmentColor()
 		: m_Color{ 0.2f, 0.3f, 0.8f, 1.0f },
-		m_Proj(glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f)),
+		m_Proj(glm::ortho(0.0f, static_cast<float>(width), 0.0f, static_cast<float>(height), -1.0f, 1.0f)),
 		m_View(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0))),
 		m_TranslationA(200, 200, 0)
 	{
 		glm::vec3 translationA(200, 200, 0);
 
+		int rectSize = 5;
+
 		float positions[] = {
-			-50.0f, -50.0f, 0.0f, 0.0f,
-			 50.0f, -50.0f, 1.0f, 0.0f,   
-			 50.0f,  50.f,  1.0f, 1.0f,   
-			-50.0f,  50.0f, 0.0f, 1.0f    
+			// positions, x , y , z	= 0.0f																		// colors
+			 static_cast<float>(-width / rectSize),static_cast<float>(-height / rectSize), 0.0f,	//1.0f, 0.0f, 0.0f,
+			 static_cast<float>(width / rectSize), static_cast<float>(-height / rectSize), 0.0f,	//0.0f, 1.0f, 0.0f,
+			 static_cast<float>(width / rectSize), static_cast<float>(height / rectSize),  0.0f,	//0.0f, 0.0f, 1.0f,
+			 static_cast<float>(-width / rectSize),static_cast<float>(height / rectSize),  0.0f,	//0.5f, 0.0f, 0.05f
 		};
 
 		unsigned int indices[] = {
@@ -35,10 +37,11 @@ namespace test
 
 		m_VAO = std::make_unique<VertexArray>();
 
-		m_VBO = std::make_unique<VertexBuffer>(positions, 4 * 4 * sizeof(float));
+		m_VBO = std::make_unique<VertexBuffer>(positions, sizeof(positions));
+
 		VertexBufferLayout layout;
-		layout.Push<float>(2);
-		layout.Push<float>(2);
+		layout.Push<float>(3);
+		//layout.Push<float>(3);
 
 		m_VAO->AddBuffer(*m_VBO, layout);
 		m_IBO = std::make_unique<IndexBuffer>(indices, 6);
@@ -69,6 +72,7 @@ namespace test
 		m_Shader->Bind();
 		m_Shader->SetUniform4f("u_Color", m_Color[0], m_Color[1], m_Color[2], m_Color[3]);
 		m_Shader->SetUniformMat4f("u_MVP", mvp);
+
 		renderer.Draw(*m_VAO, *m_IBO, *m_Shader);
 		
 	}
@@ -76,7 +80,9 @@ namespace test
 	void TestFragmentColor::OnImGuiRender()
 	{
 		ImGui::ColorEdit4("Fragment Color", m_Color);
-		ImGui::SliderFloat3("Translation", &m_TranslationA.x, 0.0f, 960.0f);
+		ImGui::SliderFloat("Translation X", &m_TranslationA.x, 0.0f, static_cast<float>(width));
+		ImGui::SliderFloat("Translation Y", &m_TranslationA.y, 0.0f, static_cast<float>(height));
+
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 	}
 }

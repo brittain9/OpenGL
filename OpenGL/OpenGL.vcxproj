@@ -150,6 +150,7 @@
     <None Include="res\shaders\BasicVertex.shader" />
     <None Include="res\shaders\FragmentColor.shader" />
     <None Include="res\shaders\FragmentTexture.shader" />
+    <None Include="res\shaders\VertexTexture.shader" />
     <None Include="src\vendor\glm\detail\func_common.inl" />
     <None Include="src\vendor\glm\detail\func_common_simd.inl" />
     <None Include="src\vendor\glm\detail\func_exponential.inl" />
@@ -297,7 +298,7 @@
   <ItemGroup>
     <ClCompile Include="src\IndexBuffer.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\Render.cpp" />
+    <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\tests\Test.cpp" />
     <ClCompile Include="src\tests\TestClearColor.cpp" />

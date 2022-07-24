@@ -21,16 +21,12 @@
 #include "tests/TestTexture.h"
 #include "tests/TestFragmentColor.h"
 
-// Batch Rendering: how we can render more than 1 piece of geometry in a single draw call
-
-int width{ 960 };
-int height{ 540 };
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
 	// From learnopengl Hello Window. this with glfwSetFrame will auto resize the viewport on window resize
 	glViewport(0, 0, width, height);
-}
+} 
 
 int main(void)
 {

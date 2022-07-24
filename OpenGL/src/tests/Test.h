@@ -4,6 +4,8 @@
 #include <iostream>
 #include <vector>
 
+static int width{ 1920 };
+static int height{ 1080 };
 
 namespace test
 {
