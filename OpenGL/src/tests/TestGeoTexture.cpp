@@ -1,6 +1,6 @@
 #include "TestGeoTexture.h"
 
-
+#include <GLFW/glfw3.h>
 
 
 #include "imgui/imgui.h"
@@ -17,7 +17,6 @@ namespace test
 
 	{
 		glm::vec3 translationA(200, 200, 0);
-		glm::vec3 translationB(400, 200, 0);
 
 		int rectSize = 3;
 
@@ -50,7 +49,7 @@ namespace test
 
 		m_Shader = std::make_unique<Shader>("res/shaders/VertexTexture.shader", "res/shaders/FragmentTexture.shader");
 		m_Shader->Bind();
-		m_Texture = std::make_unique<Texture>("res/textures/container.jpg");
+		m_Texture = std::make_unique<Texture>("res/textures/goat.png");
 		m_Shader->SetUniform1i("u_Texture", 0); // 0 matches slot 0
 
 	}
@@ -72,8 +71,14 @@ namespace test
 
 		m_Texture->Bind();
 
+		glm::mat4 trans = glm::mat4(1.0f); // identity matrix
+		trans = glm::translate(trans, glm::vec3(1000.0f, 1.0f, 0.0f));
+		trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+		trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
 		glm::mat4 model = glm::translate(glm::mat4(1.0f), m_TranslationA);
-		glm::mat4 mvp = m_Proj * m_View * model;
+
+
+		glm::mat4 mvp = m_Proj * trans * model;
 		m_Shader->Bind();
 		m_Shader->SetUniformMat4f("u_MVP", mvp);
 		renderer.Draw(*m_VAO, *m_IBO, *m_Shader);

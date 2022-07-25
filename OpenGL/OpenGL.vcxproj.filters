@@ -450,6 +450,9 @@
     <Image Include="res\textures\container.jpg">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="res\textures\GimpCustomCard.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\IndexBuffer.cpp">

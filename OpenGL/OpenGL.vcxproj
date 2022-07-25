@@ -292,6 +292,7 @@
     <Image Include="res\textures\container.jpg" />
     <Image Include="res\textures\explosion.png" />
     <Image Include="res\textures\foam.png" />
+    <Image Include="res\textures\GimpCustomCard.png" />
     <Image Include="res\textures\goat.png" />
     <Image Include="res\textures\gorilla.png" />
     <Image Include="res\textures\plum.png" />

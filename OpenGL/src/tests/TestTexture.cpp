@@ -21,7 +21,7 @@ namespace test
 		glm::vec3 translationB(400, 200, 0);
 	  
 		float positions[] = {
-			// positions				// Color					// tex coords
+			// positions				// Color			// tex coords
 			-50.0f, -50.0f, 0.0f,		1.0f,1.0f,1.0f,		0.0f, 0.0f,   // x, y, z, text coords
 			 50.0f, -50.0f, 0.0f,		1.0f,1.0f,1.0f,		1.0f, 0.0f,   // 1 right side of texture
 			 50.0f,  50.0f, 0.0f,		1.0f,1.0f,1.0f,		1.0f, 1.0f,   // 2 top right
@@ -50,7 +50,7 @@ namespace test
 
 		m_Shader = std::make_unique<Shader>("res/shaders/VertexTexture.shader", "res/shaders/FragmentTexture.shader");
 		m_Shader->Bind();
-		m_Texture = std::make_unique<Texture>("res/textures/goat.png");
+		m_Texture = std::make_unique<Texture>("res/textures/GimpCustomCard.png");
 		m_Shader->SetUniform1i("u_Texture", 0); // 0 matches slot 0
 	}
 

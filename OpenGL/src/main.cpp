@@ -86,7 +86,6 @@ int main(void)
 		testMenu->RegisterTest<test::TestGeometryTexture2D>("2D Geometry Texture");
 		testMenu->RegisterTest<test::TestFragmentColor>("2D Color");
 
-
 		while (!glfwWindowShouldClose(window))
 		{
 			GLCALL(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
