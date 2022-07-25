@@ -444,6 +444,12 @@
     <Image Include="res\textures\gorilla.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="res\textures\wall.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\textures\container.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\IndexBuffer.cpp">
@@ -504,6 +510,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\tests\TestFragmentColor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tests\TestGeoTexture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1415,6 +1424,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\tests\TestFragmentColor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tests\TestGeoTexture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

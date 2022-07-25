@@ -20,6 +20,7 @@
 #include "tests/TestClearColor.h"
 #include "tests/TestTexture.h"
 #include "tests/TestFragmentColor.h"
+#include "tests/TestGeoTexture.h"
 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -82,6 +83,7 @@ int main(void)
 
 		testMenu->RegisterTest<test::TestClearColor>("Clear Color");
 		testMenu->RegisterTest<test::TestTexture2D>("2D Texture");
+		testMenu->RegisterTest<test::TestGeometryTexture2D>("2D Geometry Texture");
 		testMenu->RegisterTest<test::TestFragmentColor>("2D Color");
 
 

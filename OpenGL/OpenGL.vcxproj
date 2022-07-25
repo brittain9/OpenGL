@@ -289,11 +289,13 @@
     <None Include="src\vendor\glm\gtx\wrap.inl" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="res\textures\container.jpg" />
     <Image Include="res\textures\explosion.png" />
     <Image Include="res\textures\foam.png" />
     <Image Include="res\textures\goat.png" />
     <Image Include="res\textures\gorilla.png" />
     <Image Include="res\textures\plum.png" />
+    <Image Include="res\textures\wall.jpg" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\IndexBuffer.cpp" />
@@ -303,6 +305,7 @@
     <ClCompile Include="src\tests\Test.cpp" />
     <ClCompile Include="src\tests\TestClearColor.cpp" />
     <ClCompile Include="src\tests\TestFragmentColor.cpp" />
+    <ClCompile Include="src\tests\TestGeoTexture.cpp" />
     <ClCompile Include="src\tests\TestTexture.cpp" />
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\vendor\glm\detail\glm.cpp" />
@@ -324,6 +327,7 @@
     <ClInclude Include="src\tests\TestClearColor.h" />
     <ClInclude Include="src\tests\Test.h" />
     <ClInclude Include="src\tests\TestFragmentColor.h" />
+    <ClInclude Include="src\tests\TestGeoTexture.h" />
     <ClInclude Include="src\tests\TestTexture.h" />
     <ClInclude Include="src\Texture.h" />
     <ClInclude Include="src\vendor\glm\common.hpp" />

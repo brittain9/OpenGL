@@ -13,14 +13,20 @@ Texture::Texture(const std::string& path)
 	GLCALL(glGenTextures(1, &m_RendererID));
 	GLCALL(glBindTexture(GL_TEXTURE_2D, m_RendererID));
 
-	GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+	// Texture filtering
+	GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
 	GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
-	GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
-	GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
+
+	// Texture wrapping
+	GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT));
+	GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT));
 
 	if(m_LocalBuffer)
 	{
 		GLCALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_LocalBuffer));
+		glGenerateMipmap(GL_TEXTURE_2D);
+
+		// Unbind texture and free memory
 		GLCALL(glBindTexture(GL_TEXTURE_2D, 0));
 		stbi_image_free(m_LocalBuffer);
 	}
