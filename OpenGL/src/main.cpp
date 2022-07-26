@@ -27,7 +27,13 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
 	// From learnopengl Hello Window. this with glfwSetFrame will auto resize the viewport on window resize
 	glViewport(0, 0, width, height);
-} 
+}
+
+void processInput(GLFWwindow* window)
+{
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, true);
+}
 
 int main(void)
 {
@@ -82,12 +88,14 @@ int main(void)
 		currentTest = testMenu;
 
 		testMenu->RegisterTest<test::TestClearColor>("Clear Color");
-		testMenu->RegisterTest<test::TestTexture2D>("2D Texture");
-		testMenu->RegisterTest<test::TestGeometryTexture2D>("2D Geometry Texture");
+		testMenu->RegisterTest<test::TestTexture2D>("3D Texture");
+		testMenu->RegisterTest<test::TestGeometryTexture2D>("2D Texture");
 		testMenu->RegisterTest<test::TestFragmentColor>("2D Color");
 
 		while (!glfwWindowShouldClose(window))
 		{
+			processInput(window);
+
 			GLCALL(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
 			renderer.Clear();
 

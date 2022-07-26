@@ -427,6 +427,8 @@
     <None Include="res\shaders\FragmentColor.shader" />
     <None Include="res\shaders\FragmentTexture.shader" />
     <None Include="res\shaders\VertexTexture.shader" />
+    <None Include="res\shaders\VertexTextureNoColor.shader" />
+    <None Include="res\shaders\FragmentTextureNoColor.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\goat.png">

@@ -20,11 +20,11 @@ namespace test
 		int rectSize = 5;
 
 		float positions[] = {
-			// positions, x , y , z	= 0.0f																		// colors
-			 static_cast<float>(-width / rectSize),static_cast<float>(-height / rectSize), 0.0f,	//1.0f, 0.0f, 0.0f,
-			 static_cast<float>(width / rectSize), static_cast<float>(-height / rectSize), 0.0f,	//0.0f, 1.0f, 0.0f,
-			 static_cast<float>(width / rectSize), static_cast<float>(height / rectSize),  0.0f,	//0.0f, 0.0f, 1.0f,
-			 static_cast<float>(-width / rectSize),static_cast<float>(height / rectSize),  0.0f,	//0.5f, 0.0f, 0.05f
+			// positions, x , y , z	= 0.0f														
+			 static_cast<float>(-width / rectSize),static_cast<float>(-height / rectSize), 0.0f,
+			 static_cast<float>(width / rectSize), static_cast<float>(-height / rectSize), 0.0f,
+			 static_cast<float>(width / rectSize), static_cast<float>(height / rectSize),  0.0f,
+			 static_cast<float>(-width / rectSize),static_cast<float>(height / rectSize),  0.0f,
 		};
 
 		unsigned int indices[] = {
@@ -41,7 +41,6 @@ namespace test
 
 		VertexBufferLayout layout;
 		layout.Push<float>(3);
-		//layout.Push<float>(3);
 
 		m_VAO->AddBuffer(*m_VBO, layout);
 		m_IBO = std::make_unique<IndexBuffer>(indices, 6);
@@ -62,7 +61,9 @@ namespace test
 	void TestFragmentColor::OnRender()
 	{
 		GLCALL(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
-		GLCALL(glClear(GL_COLOR_BUFFER_BIT));
+		GLCALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+		glDisable(GL_DEPTH_TEST);
+
 
 		Renderer renderer;
 

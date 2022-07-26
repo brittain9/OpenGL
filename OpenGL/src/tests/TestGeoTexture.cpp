@@ -12,20 +12,20 @@ namespace test
 {
 	TestGeometryTexture2D::TestGeometryTexture2D()
 		: m_Proj(glm::ortho(0.0f, static_cast<float>(width), 0.0f, static_cast<float>(height), -1.0f, 1.0f)),
-		m_View(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0))),
-		m_TranslationA(200, 200, 0), m_TranslationB(400, 200, 0)
+		m_View(glm::mat4(1.0f)),
+		m_TranslationA(400, 300, 0)
 
 	{
-		glm::vec3 translationA(200, 200, 0);
+		glm::vec3 translationA(400, 300, 0);
 
 		int rectSize = 3;
 
 		float positions[] = {
-			// positions																	// Colors					// tex coords
-		static_cast<float>(-width / rectSize),static_cast<float>(-height / rectSize),0.0f,	1.0f, 0.0f, 0.0f,	0.0f, 0.0f,
-		static_cast<float>(width / rectSize), static_cast<float>(-height / rectSize), 0.0f,	0.0f, 1.0f, 0.0f,	1.0f, 0.0f,
-		static_cast<float>(width / rectSize), static_cast<float>(height / rectSize), 0.0f,	0.0f, 0.0f, 1.0f,	1.0f, 1.0f,
-		static_cast<float>(-width / rectSize), static_cast<float>(height / rectSize), 0.0f,	1.0f, 1.0f, 0.0f,	0.0f, 1.0f
+			// positions																		// Colors			// tex coords
+		static_cast<float>(-width / rectSize),static_cast<float>(-height / rectSize),0.0f,		1.0f, 0.0f, 0.0f,	0.0f, 0.0f,
+		static_cast<float>(width / rectSize), static_cast<float>(-height / rectSize), 0.0f,		0.0f, 1.0f, 0.0f,	1.0f, 0.0f,
+		static_cast<float>(width / rectSize), static_cast<float>(height / rectSize), 0.0f,		0.0f, 0.0f, 1.0f,	1.0f, 1.0f,
+		static_cast<float>(-width / rectSize), static_cast<float>(height / rectSize), 0.0f,		1.0f, 1.0f, 0.0f,	0.0f, 1.0f
 		};
 
 		unsigned int indices[] = {
@@ -65,24 +65,22 @@ namespace test
 	void TestGeometryTexture2D::OnRender()
 	{
 		GLCALL(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
-		GLCALL(glClear(GL_COLOR_BUFFER_BIT));
+		GLCALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+		glDisable(GL_DEPTH_TEST);
 
 		Renderer renderer;
 
 		m_Texture->Bind();
 
-		glm::mat4 trans = glm::mat4(1.0f); // identity matrix
-		trans = glm::translate(trans, glm::vec3(1000.0f, 1.0f, 0.0f));
-		trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
-		trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
-		glm::mat4 model = glm::translate(glm::mat4(1.0f), m_TranslationA);
+		glm::mat4 model = glm::mat4(1.0f); // identity matrix, does nothing
+		model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+		m_View = glm::translate(glm::mat4(1.0f), m_TranslationA);
 
-
-		glm::mat4 mvp = m_Proj * trans * model;
 		m_Shader->Bind();
-		m_Shader->SetUniformMat4f("u_MVP", mvp);
+		m_Shader->SetUniformMat4f("model", model);
+		m_Shader->SetUniformMat4f("view", m_View);
+		m_Shader->SetUniformMat4f("projection", m_Proj);
 		renderer.Draw(*m_VAO, *m_IBO, *m_Shader);
-
 	}
 
 	void TestGeometryTexture2D::OnImGuiRender()

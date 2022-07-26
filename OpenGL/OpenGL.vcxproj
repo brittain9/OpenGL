@@ -150,7 +150,9 @@
     <None Include="res\shaders\BasicVertex.shader" />
     <None Include="res\shaders\FragmentColor.shader" />
     <None Include="res\shaders\FragmentTexture.shader" />
+    <None Include="res\shaders\FragmentTextureNoColor.shader" />
     <None Include="res\shaders\VertexTexture.shader" />
+    <None Include="res\shaders\VertexTextureNoColor.shader" />
     <None Include="src\vendor\glm\detail\func_common.inl" />
     <None Include="src\vendor\glm\detail\func_common_simd.inl" />
     <None Include="src\vendor\glm\detail\func_exponential.inl" />
